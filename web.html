@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TopBiz Learning Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            background-color: #f9f9f9;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            background-color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        header .container{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .logo {
+            display: flex;
+            align-items: center;
+        }
+        header .logo img {
+            height: 30px;
+            margin-right: 10px;
+        }
+        header .logo span {
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        header nav ul{
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 20px;
+        }
+
+        header nav ul li a {
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        header nav ul li a:hover {
+            color: #007bff;
+        }
+        header .social-icons {
+            display: flex;
+            gap: 10px;
+        }
+        header .social-icons a {
+            color: #555;
+            font-size: 1.2em;
+        }
+        header .social-icons a:hover{
+            color: #007bff;
+        }
+
+
+        .hero {
+            background: linear-gradient(to right, #a8e6cf, #dcedc1, #ffd3b5, #ffaaa6);
+            text-align: center;
+            color: black;
+            padding: 100px 0;
+        }
+        .hero h1{
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero p{
+            font-size: 1.2em;
+        }
+        .filter-bar {
+            padding: 20px 0;
+            text-align: center;
+        }
+        .filter-bar button {
+            background-color: #eee;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .filter-bar button.active, .filter-bar button:hover {
+            background-color: #007bff;
+            color: white;
+        }
+        .content{
+            padding: 20px 0;
+        }
+        .content .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .lesson-card {
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            width: 300px;
+        }
+
+        .lesson-card img {
+            max-width: 100%;
+            height: 200px;
+            border-radius: 5px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+        .lesson-card h3{
+            margin-bottom: 5px;
+        }
+        .lesson-card p {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .lesson-card button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .lesson-card button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 900px;
+            border-radius: 8px;
+            position: relative;
+        }
+        .close-button{
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 2em;
+            color: #aaa;
+            cursor: pointer;
+        }
+        #video-container {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        #video-container video {
+            width: 80%;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        #quiz-container{
+            margin-bottom: 20px;
+        }
+        #quiz-container p{
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        #quiz-container form input{
+            margin-bottom: 10px;
+            display: block;
+        }
+        #progress-container {
+            text-align: center;
+        }
+        .progress-bar{
+            background-color: #eee;
+            height: 20px;
+            border-radius: 10px;
+            width: 90%;
+            margin: 10px auto;
+            overflow: hidden;
+        }
+        #progress-bar-inner{
+            background-color: #28a745;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        #progress-percentage{
+            margin-top: 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+              <img src="logo.png" alt="TopBiz Logo">
+              <span>TopBiz</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Gallery</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Pages</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fas fa-circle"></i></a>
+            </div>
+        </div>
+    </header>
+
+
+    <section class="hero">
+        <div class="container">
+            <h1>Portfolio 2</h1>
+            <p>Home | Gallery | Portfolio 2</p>
+        </div>
+    </section>
+     <section class="filter-bar">
+        <div class="container">
+            <button class="active" data-category="all">ALL</button>
+            <button data-category="web-design">WEB DESIGN</button>
+            <button data-category="print">PRINT</button>
+            <button data-category="photography">PHOTOGRAPHY</button>
+            <button data-category="marketing">MARKETING</button>
+            <button data-category="media">MEDIA</button>
+            <button data-category="branding">BRANDING</button>
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container">
+            <div class="lesson-card" data-category="web-design">
+                <img src="lesson-image1.jpg" alt="Lesson 1">
+                <h3>Sed diam nonumy</h3>
+                <p>WEB DESIGN, MEDIA</p>
+                <p>Consetetur sadipscing elitr, sed diam nonumy eirmod tempor</p>
+                <button class="lesson-button" data-lesson-id="1">Start Lesson</button>
+            </div>
+            <div class="lesson-card" data-category="photography print">
+                <img src="lesson-image2.jpg" alt="Lesson 2">
+                <h3>Eirmod tempor</h3>
+                <p>PHOTOGRAPHY, PRINT</p>
+                <p>At vero eos et accusam et justo duo dolores et ea rebum stet clita kasd</p>
+                <button class="lesson-button" data-lesson-id="2">Start Lesson</button>
+            </div>
+            <div class="lesson-card" data-category="marketing branding">
+                <img src="lesson-image3.jpg" alt="Lesson 3">
+                <h3>Invidunt ut labore et</h3>
+                <p>MARKETING, BRANDING</p>
+                <p>Sanctus est lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet</p>
+                <button class="lesson-button" data-lesson-id="3">Start Lesson</button>
+            </div>
+              <div class="lesson-card" data-category="web-design">
+                <img src="lesson-image1.jpg" alt="Lesson 4">
+                <h3>Sed diam nonumy</h3>
+                <p>WEB DESIGN, MEDIA</p>
+                <p>Consetetur sadipscing elitr, sed diam nonumy eirmod tempor</p>
+                <button class="lesson-button" data-lesson-id="4">Start Lesson</button>
+            </div>
+            <div class="lesson-card" data-category="photography print">
+                <img src="lesson-image2.jpg" alt="Lesson 5">
+                <h3>Eirmod tempor</h3>
+                <p>PHOTOGRAPHY, PRINT</p>
+                <p>At vero eos et accusam et justo duo dolores et ea rebum stet clita kasd</p>
+                 <button class="lesson-button" data-lesson-id="5">Start Lesson</button>
+            </div>
+            <div class="lesson-card" data-category="marketing branding">
+                <img src="lesson-image3.jpg" alt="Lesson 6">
+                <h3>Invidunt ut labore et</h3>
+                <p>MARKETING, BRANDING</p>
+                <p>Sanctus est lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet</p>
+                <button class="lesson-button" data-lesson-id="6">Start Lesson</button>
+            </div>
+        </div>
+    </section>
+    <div id="lesson-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">×</span>
+            <div id="video-container">
+            </div>
+            <div id="quiz-container">
+            </div>
+           <div id="progress-container">
+             <p>Lesson Progress:</p>
+             <div class="progress-bar">
+               <div id="progress-bar-inner"></div>
+             </div>
+             <p id="progress-percentage">0%</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          // Filter functionality
+            const filterButtons = document.querySelectorAll('.filter-bar button');
+            const lessonCards = document.querySelectorAll('.lesson-card');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    const category = this.dataset.category;
+                    lessonCards.forEach(card => {
+                        const cardCategories = card.dataset.category.split(' ');
+                        if (category === 'all' || cardCategories.includes(category)) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // Modal elements
+            const modal = document.getElementById('lesson-modal');
+            const closeButton = document.querySelector('.close-button');
+            const lessonButtons = document.querySelectorAll('.lesson-button');
+
+            const videoContainer = document.getElementById('video-container');
+            const quizContainer = document.getElementById('quiz-container');
+            const progressBarInner = document.getElementById('progress-bar-inner');
+            const progressPercentage = document.getElementById('progress-percentage');
+              let progress = 0;
+
+
+            // Function to show the modal
+             function openLessonModal(lessonId) {
+                modal.style.display = 'block';
+                loadLesson(lessonId);
+            }
+           // Function to hide the modal
+            function closeModal(){
+                 modal.style.display = 'none';
+                  // Reset modal content to ensure clean start if reopened
+                  videoContainer.innerHTML = '';
+                  quizContainer.innerHTML = '';
+                   progress = 0;
+                   progressBarInner.style.width = '0%';
+                   progressPercentage.textContent = '0%';
+            }
+
+            // Event listeners for lesson buttons
+             lessonButtons.forEach(button => {
+                 button.addEventListener('click', () => {
+                  const lessonId = button.dataset.lessonId;
+                  openLessonModal(lessonId);
+               });
+            });
+
+
+            // Event listener for close button
+            closeButton.addEventListener('click',closeModal);
+
+
+              // Close modal when clicking outside
+            window.addEventListener('click', function (event) {
+              if (event.target === modal) {
+                 closeModal();
+              }
+            });
+
+
+             // Load lesson content (Video, quiz, progress)
+            function loadLesson(lessonId) {
+               let lessonData;
+                switch (parseInt(lessonId)) {
+                 case 1:
+                   lessonData ={
+                    videoUrl: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4',
+                    quiz: {
+                        question:'What is the main point of this lesson?',
+                        options: ['Option A','Option B', 'Option C', 'Option D'],
+                         answerIndex: 1
+                    },
+                   };
+                   break;
+                 case 2:
+                 lessonData = {
+                   videoUrl: 'https://samplelib.com/lib/preview/mp4/sample-10s.mp4',
+                     quiz: {
+                        question:'What is the main point of this lesson?',
+                         options: ['Option 1','Option 2', 'Option 3', 'Option 4'],
+                         answerIndex: 2
+                       }
+                   };
+                   break;
+                 case 3:
+                  lessonData = {
+                     videoUrl: 'https://samplelib.com/lib/preview/mp4/sample-15s.mp4',
+                     quiz: {
+                       question:'What is the main point of this lesson?',
+                        options: ['Choice 1','Choice 2', 'Choice 3', 'Choice 4'],
+                         answerIndex: 3
+                       }
+                   };
+                   break;
+                   case 4:
+                    lessonData ={
+                      videoUrl: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4',
+                       quiz: {
+                        question:'What is the main point of this lesson?',
+                        options: ['Option A','Option B', 'Option C', 'Option D'],
+                         answerIndex: 1
+                       },
+                     };
+                     break;
+                 case 5:
+                  lessonData = {
+                    videoUrl: 'https://samplelib.com/lib/preview/mp4/sample-10s.mp4',
+                      quiz: {
+                        question:'What is the main point of this lesson?',
+                         options: ['Option 1','Option 2', 'Option 3', 'Option 4'],
+                         answerIndex: 2
+                       }
+                    };
+                    break;
+                 case 6:
+                     lessonData = {
+                     videoUrl: 'https://samplelib.com/lib/preview/mp4/sample-15s.mp4',
+                      quiz: {
+                       question:'What is the main point of this lesson?',
+                       options: ['Choice 1','Choice 2', 'Choice 3', 'Choice 4'],
+                        answerIndex: 3
+                        }
+                   };
+                  break;
+                  default:
+                    console.error("Invalid lesson ID");
+                    return;
+                }
+
+            videoContainer.innerHTML = ` <video controls>
+                            <source src="${lessonData.videoUrl}" type="video/mp4">
+                          </video>`
+
+              const quizForm = document.createElement('form');
+              quizForm.innerHTML = `
+                 <p>${lessonData.quiz.question}</p>
+                 ${lessonData.quiz.options.map((option, index) => `
+                    <input type="radio" name="answer" value="${index}" id="option-${index}">
+                    <label for="option-${index}">${option}</label><br>
+                `).join('')}
+                <button type="button">Submit</button>
+              `;
+                quizContainer.innerHTML = '';
+                quizContainer.appendChild(quizForm);
+
+              quizForm.querySelector('button').addEventListener('click',() =>{
+                  const selectedOption = quizForm.querySelector('input[name="answer"]:checked');
+                    if (selectedOption){
+                      const answerIndex = parseInt(selectedOption.value);
+                        if(answerIndex === lessonData.quiz.answerIndex){
+                          updateProgress(100);
+                          alert('Correct Answer!');
+                        }
+                        else{
+                          alert("Incorrect Answer, Try again!");
+                         updateProgress(20);
+                        }
+
+                    }
+                  else{
+                        alert("Please select an answer");
+                  }
+                })
+
+            }
+
+            // Function to update the progress
+            function updateProgress(amount) {
+                progress += amount;
+                if (progress > 100) {
+                    progress = 100;
+                }
+               progressBarInner.style.width = progress + '%';
+                progressPercentage.textContent = progress + '%';
+            }
+        });
+
+    </script>
+</body>
+</html>
